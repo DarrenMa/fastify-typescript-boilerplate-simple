@@ -1,0 +1,60 @@
+{
+  "name": "fastify-typescript-boilerplate-simple",
+  "description": "Fastify boilerplate webservice",
+  "version": "1.0.0",
+  "main": "app.ts",
+  "scripts": {
+    "build": "tsc && copyfiles -f .env ./dist",
+    "start": "npm run knex:migrate:latest && node ./dist/index.js",
+    "tsnode": "ts-node ./src/app.ts",
+    "knex:warning": "echo WARNING: Remember to run 'npm run build' before executing knex scripts!",
+    "knex:migrate:make": "npm run -s knex:warning && npx ts-node ./node_modules/.bin/knex --knexfile src/database/knexfile.ts migrate:make MIGRATION_NAME",
+    "knex:seed:make": "npm run -s knex:warning && node -r dotenv/config ./node_modules/.bin/knex --knexfile dist/database/knexfile.js seed:make MIGRATION_NAME",
+    "knex:seed:run": "npm run -s knex:warning && node -r dotenv/config ./node_modules/.bin/knex --knexfile dist/database/knexfile.js seed:run",
+    "knex:migrate:latest": "npm run -s knex:warning && node -r dotenv/config ./node_modules/.bin/knex --knexfile dist/database/knexfile.js migrate:latest",
+    "knex:migrate:rollback": "npm run -s knex:warning && node -r dotenv/config ./node_modules/.bin/knex --knexfile dist/database/knexfile.js migrate:rollback",
+    "knex:migrate:list": "npm run -s knex:warning && node -r dotenv/config ./node_modules/.bin/knex --knexfile dist/database/knexfile.js migrate:list",
+    "test": "jest --verbose --coverage"
+  },
+  "keywords": [
+    "fastify",
+    "boilerplate",
+    "typescript",
+    "microservice"
+  ],
+  "author": "DarrenMa",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "@fastify/swagger": "^8.13.0",
+    "@fastify/swagger-ui": "^2.1.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.25.2",
+    "fastify-plugin": "^4.5.1",
+    "knex": "3.1.0",
+    "pg": "^8.11.3",
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^4.7.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/knex": "^0.16.1",
+    "@types/node": "^20.11.0",
+    "@types/supertest": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "6.19.0",
+    "@typescript-eslint/parser": "6.19.0",
+    "copyfiles": "^2.4.1",
+    "eslint": "8.56.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.1.0",
+    "eslint-plugin-import": "^2.25.2",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

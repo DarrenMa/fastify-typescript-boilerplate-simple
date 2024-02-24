@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "moduleResolution": "NodeNext",
+    "experimentalDecorators": true,
+  },
+  "include": [
+    "./src",
+    "./.eslintrc.cjs",
+  ]
+}
