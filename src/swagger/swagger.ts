@@ -17,12 +17,9 @@ const swaggerOptions = {
   },
 };
 
-const swaggerUiOptions = {
-  routePrefix: '/api-docs',
-  exposeRoute: true,
-};
-
 export default function setupSwagger(app: FastifyInstance) {
   app.register(fastifySwagger, swaggerOptions);
-  app.register(fastifySwaggerUi, swaggerUiOptions);
+  app.register(fastifySwaggerUi, {
+    routePrefix: '/api-docs',
+  });
 }
