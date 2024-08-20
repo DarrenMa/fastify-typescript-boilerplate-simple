@@ -5,7 +5,7 @@ import loggable from '../decorators/loggable';
 export default class UserService {
   private userRepository: UserRepository;
 
-  constructor(userRepository: UserRepository) {
+  constructor({ userRepository }: { userRepository: UserRepository }) {
     this.userRepository = userRepository;
   }
 
@@ -25,7 +25,12 @@ export default class UserService {
   }
 
   @loggable
-  async updateUser(user: User): Promise<void> {
-    return this.userRepository.update(user);
+  async updateUser(userId: number, user: User): Promise<void> {
+    return this.userRepository.update(userId, user);
+  }
+
+  @loggable
+  async getAllUsers(): Promise<User[]> {
+    return this.userRepository.getAllUsers();
   }
 }

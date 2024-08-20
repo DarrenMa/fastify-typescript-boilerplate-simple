@@ -3,14 +3,20 @@ const updateUserSchema = {
     summary: 'Update user',
     description: 'Update a user in the database',
     tags: ['User'],
-    body: {
+    params: {
       type: 'object',
       properties: {
         id: { type: 'number' },
+      },
+      required: ['id'],
+    },
+    body: {
+      type: 'object',
+      properties: {
         name: { type: 'string' },
         password: { type: 'string' },
       },
-      required: ['id'],
+      required: ['name', 'password'],
     },
     response: {
       200: {

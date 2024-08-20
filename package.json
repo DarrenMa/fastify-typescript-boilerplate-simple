@@ -28,8 +28,10 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
+    "@fastify/awilix": "^5.1.0",
     "@fastify/swagger": "^8.15.0",
     "@fastify/swagger-ui": "^4.0.1",
+    "awilix": "^10.0.2",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",

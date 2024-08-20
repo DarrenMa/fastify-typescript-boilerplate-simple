@@ -4,7 +4,7 @@ import { User } from '../types';
 export default class UserRepository {
   private db: Knex;
 
-  constructor(db: Knex) {
+  constructor({ db }: { db: Knex; }) {
     this.db = db;
   }
 
@@ -35,13 +35,22 @@ export default class UserRepository {
       .del();
   }
 
-  async update(user: User): Promise<void> {
+  async update(userId: number, user: User): Promise<void> {
     const rowsAffected = await this.db('users')
-      .where({ id: user.id })
+      .where({ id: userId })
       .update(user);
 
     if (!rowsAffected) {
       throw new Error('Failed to update user');
     }
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    const users = await this.db
+      .select('id', 'name')
+      .from<User>('users')
+      .orderBy('id');
+
+    return users;
   }
 }

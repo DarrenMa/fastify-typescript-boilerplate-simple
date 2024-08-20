@@ -3,7 +3,7 @@ const getUserSchema = {
     summary: 'Get user by id',
     description: 'Get user by id',
     tags: ['User'],
-    querystring: {
+    params: {
       type: 'object',
       properties: {
         id: { type: 'string' },

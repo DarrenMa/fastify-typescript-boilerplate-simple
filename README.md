@@ -65,9 +65,11 @@ This is a boilerplate for a user management system, providing basic CRUD operati
 
 ## Dependency Injection
 
-This project uses Fastify plugins ('fastify-plugin') for dependency injection, creating a simple and effective way to manage dependencies. The data layer accepts the database, and the service layer takes in the data layer, all bundled into a Fastify plugin. This approach is ideal for smaller microservices.
+This project uses `@fastify/awilix` for dependency injection, providing a robust and flexible way to manage dependencies. The data layer accepts the database, and the service layer takes in the data layer, all managed through the Awilix container and integrated into a Fastify plugin. This approach is suitable for both smaller microservices and more complex projects.
 
-For more complex projects, consider using [fastify-awilix](https://github.com/fastify/fastify-awilix), a Fastify plugin that integrates the Awilix dependency injection container.
+We have also adopted a named parameter best practice, ensuring that dependencies are clearly identified and injected by name, which enhances readability and maintainability.
+
+For more information, refer to the [fastify-awilix](https://github.com/fastify/fastify-awilix) documentation.
 
 ## Data Protection in Logging
 

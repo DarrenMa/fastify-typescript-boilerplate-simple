@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
 import UserRepository from '../../src/datalayer/UserRepository';
+import { User } from '../../src/types';
 
 jest.mock('knex');
 
@@ -12,24 +13,22 @@ describe('UserRepository', () => {
       select: jest.fn().mockReturnThis(),
       from: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
-      first: jest.fn(),
+      first: jest.fn() as jest.Mock,
       insert: jest.fn().mockReturnThis(),
       returning: jest.fn().mockResolvedValue([{ id: 1 }]),
       del: jest.fn().mockReturnThis(),
       update: jest.fn().mockResolvedValue(1),
+      orderBy: jest.fn().mockReturnThis(),
     };
     db = jest.fn(() => dbImplementation) as any;
     Object.assign(db, dbImplementation);
-    userRepository = new UserRepository(db as any);
+    userRepository = new UserRepository({ db: db as any });
   });
 
   describe('get', () => {
     it('should return a user when given a valid id', async () => {
-      const user = { id: 1, name: 'John Doe' };
-      db.select = jest.fn().mockReturnThis();
-      db.from = jest.fn().mockReturnThis();
-      db.where = jest.fn().mockReturnThis();
-      db.first = jest.fn().mockResolvedValue(user);
+      const user: User = { id: 1, name: 'John Doe', password: '' };
+      (db.first as jest.Mock).mockResolvedValue(user);
 
       const result = await userRepository.get(1);
 
@@ -41,10 +40,7 @@ describe('UserRepository', () => {
     });
 
     it('should throw an error when the user is not found', async () => {
-      db.select = jest.fn().mockReturnThis();
-      db.from = jest.fn().mockReturnThis();
-      db.where = jest.fn().mockReturnThis();
-      db.first = jest.fn().mockResolvedValue(undefined);
+      (db.first as jest.Mock).mockResolvedValue(undefined);
 
       await expect(userRepository.get(1)).rejects.toThrow('User not found');
     });
@@ -52,13 +48,14 @@ describe('UserRepository', () => {
 
   describe('save', () => {
     it('should save a user and return the new user id', async () => {
-      const user = { id: 1, name: 'John Doe', password: 'password' };
+      const user: User = { id: 1, name: 'John Doe', password: 'password' };
 
       const result = await userRepository.save(user);
 
       expect(result).toEqual(1);
       expect(db).toHaveBeenCalledWith('users');
       expect(db.insert).toHaveBeenCalledWith(user);
+      expect(db.returning).toHaveBeenCalledWith('id');
     });
   });
 
@@ -76,9 +73,9 @@ describe('UserRepository', () => {
 
   describe('update', () => {
     it('should update a user', async () => {
-      const user = { id: 1, name: 'John Doe', password: 'password' };
+      const user: User = { id: 1, name: 'John Doe', password: 'password' };
 
-      await userRepository.update(user);
+      await userRepository.update(user.id, user);
 
       expect(db).toHaveBeenCalledWith('users');
       expect(db.where).toHaveBeenCalledWith({ id: user.id });
@@ -86,11 +83,11 @@ describe('UserRepository', () => {
     });
 
     it('should throw an error if no rows were affected', async () => {
-      const user = { id: 1, name: 'John Doe', password: 'password' };
+      const user: User = { id: 1, name: 'John Doe', password: 'password' };
 
-      (db.update as jest.Mock).mockImplementationOnce(() => Promise.resolve(0));
-      
-      await expect(userRepository.update(user))
+      (db.update as jest.Mock).mockResolvedValueOnce(0);
+
+      await expect(userRepository.update(user.id, user))
         .rejects.toThrow('Failed to update user');
 
       expect(db).toHaveBeenCalledWith('users');
@@ -99,4 +96,17 @@ describe('UserRepository', () => {
     });
   });
 
+  describe('getAllUsers', () => {
+    it('should return all users', async () => {
+      const users: User[] = [{ id: 1, name: 'John Doe', password: '' }];
+      (db.orderBy as jest.Mock).mockResolvedValue(users);
+
+      const result = await userRepository.getAllUsers();
+
+      expect(result).toEqual(users);
+      expect(db.select).toHaveBeenCalledWith('id', 'name');
+      expect(db.from).toHaveBeenCalledWith('users');
+      expect(db.orderBy).toHaveBeenCalledWith('id');
+    });
+  });
 });

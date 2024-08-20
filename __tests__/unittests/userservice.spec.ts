@@ -1,71 +1,73 @@
-import UserRepository from '../../src/datalayer/UserRepository';
 import UserService from '../../src/services/UserService';
+import UserRepository from '../../src/datalayer/UserRepository';
 import { User } from '../../src/types';
+import { Knex } from 'knex';
 
-class MockUserRepository extends UserRepository {
-  get = jest.fn();
-  save = jest.fn();
-  update = jest.fn();
-}
+jest.mock('../../src/datalayer/UserRepository');
+
+const mockKnex = {
+  VERSION: '0.95.6',
+  __knex__: 'knex',
+  raw: jest.fn(),
+  transactionProvider: jest.fn(),
+} as unknown as Knex;
 
 describe('UserService', () => {
-  let userRepositoryMock: MockUserRepository;
   let userService: UserService;
-  let dbMock: any;
+  let userRepository: jest.Mocked<UserRepository>;
 
   beforeEach(() => {
-    userRepositoryMock = new MockUserRepository(dbMock);
-    userService = new UserService(userRepositoryMock);
+    userRepository = new UserRepository({ db: mockKnex }) as jest.Mocked<UserRepository>;
+    userService = new UserService({ userRepository });
   });
 
-  describe('getUser', () => {
-    it('should return a user by id', async () => {
-      const user: User = { id: 1, name: 'John Doe', password: 'password' };
-      userRepositoryMock.get.mockResolvedValue(user);
+  it('should get a user by ID', async () => {
+    const user: User = { id: 1, name: 'John Doe', password: '' };
+    userRepository.get.mockResolvedValue(user);
 
-      const result = await userService.getUser(1);
+    const result = await userService.getUser(1);
 
-      expect(result).toEqual(user);
-      expect(userRepositoryMock.get).toHaveBeenCalledWith(1);
-    });
+    expect(result).toEqual(user);
+    expect(userRepository.get).toHaveBeenCalledWith(1);
   });
 
-  describe('saveUser', () => {
-    it('should save a user and return the new user id', async () => {
-      const user: User = { id: 1, name: 'John Doe', password: 'password' };
-      userRepositoryMock.save.mockResolvedValue(1);
+  it('should save a user', async () => {
+    const user: User = { id: 1, name: 'John Doe', password: '' };
+    userRepository.save.mockResolvedValue(1);
 
-      const result = await userService.saveUser(user);
+    const result = await userService.saveUser(user);
 
-      expect(result).toEqual(1);
-      expect(userRepositoryMock.save).toHaveBeenCalledWith(user);
-    });
+    expect(result).toBe(1);
+    expect(userRepository.save).toHaveBeenCalledWith(user);
   });
 
-  describe('updateUser', () => {
-    it('should update a user and return the updated user', async () => {
-      const user: User = { id: 1, name: 'John Doe', password: 'password' };
-      const updatedUser: User = { ...user, name: 'Jane Doe' };
-      userRepositoryMock.update.mockResolvedValue(updatedUser);
+  it('should delete a user by ID', async () => {
+    userRepository.delete.mockResolvedValue();
 
-      const result = await userService.updateUser(updatedUser);
+    await userService.deleteUser(1);
 
-      expect(result).toEqual(updatedUser);
-      expect(userRepositoryMock.update).toHaveBeenCalledWith(updatedUser);
-    });
-
-    it('should throw an error if the user does not exist', async () => {
-      const user: User = { id: 1, name: 'John Doe', password: 'password' };
-      userRepositoryMock.update.mockImplementation(() => {
-        throw new Error('Failed to update user');
-      });
-
-      await expect(userService.updateUser(user))
-        .rejects.toThrow('Failed to update user');
-
-      expect(userRepositoryMock.update).toHaveBeenCalledWith(user);
-    });
+    expect(userRepository.delete).toHaveBeenCalledWith(1);
   });
 
+  it('should update a user by ID', async () => {
+    const user: User = { id: 1, name: 'John Doe', password: '' };
+    userRepository.update.mockResolvedValue();
 
+    await userService.updateUser(1, user);
+
+    expect(userRepository.update).toHaveBeenCalledWith(1, user);
+  });
+
+  it('should get all users', async () => {
+    const users: User[] = [
+      { id: 1, name: 'John Doe', password: '' },
+      { id: 2, name: 'Jane Doe', password: '' },
+    ];
+    userRepository.getAllUsers.mockResolvedValue(users);
+
+    const result = await userService.getAllUsers();
+
+    expect(result).toEqual(users);
+    expect(userRepository.getAllUsers).toHaveBeenCalled();
+  });
 });

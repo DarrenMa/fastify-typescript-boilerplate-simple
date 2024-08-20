@@ -4,22 +4,16 @@ import { AddressInfo } from 'net';
 import getEnvironmentVariables from './utils/environmentalVariables.js';
 import routes from './routes/routes.js';
 import logger from './utils/logger.js';
-
-import servicesPlugin from './plugins/services.js';
-import { FastifyInstanceWithServices } from './types/index.js';
 import setupSwagger from './swagger/swagger.js';
+import diContainerPlugin from './plugins/diContainerPlugin';
 
 const env = getEnvironmentVariables();
 
 const app = fastify();
 
-app.register(servicesPlugin);
-
+app.register(diContainerPlugin);
 setupSwagger(app);
-
-app.register((appInstance, options, done) => {
-  routes(appInstance as FastifyInstanceWithServices, options, done);
-}, { prefix: '/user' });
+app.register(routes, { prefix: '/users' });
 
 const start = async () => {
   try {
