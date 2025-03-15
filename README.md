@@ -19,12 +19,11 @@
 
 ## Features
 
-- **TypeScript Classes**: The project leverages TypeScript classes and decorators for a clean and intuitive design.
-- **Logging Decorator**: A custom logging decorator is used to reduce repetitive logging code and keep things DRY (Don't Repeat Yourself).
+- **TypeScript Classes**: The project leverages TypeScript classes for a clean and intuitive design.
+- **Logging**: Uses built in Fastify logger pino.
 - **Dependency Injection**: Fastify plugins are used for dependency injection, providing a simple and effective way to manage dependencies.
 - **Style Guide**: The project adheres to the Airbnb style guide for consistent and readable code.
 - **Database Management**: Knex.js is used for database connection management, with PostgreSQL as the default database.
-- **Logging**: Winston is used for logging, providing features like log rotation out of the box.
 - **Testable**: The use of dependency injection makes the project highly testable. Jest and Supertest are used for unit testing.
 - **Swagger Docs**: The project includes Swagger documentation, which **reuses the JSON Schema** files created for validation.
 
@@ -58,7 +57,7 @@ Here are a few key points to keep in mind:
 
 This is a boilerplate for a user management system, providing basic CRUD operations. It's designed to be flexible and adaptable to your needs.
 
-- Feel free to swap out components. For example, you might prefer Pino over Winston, or MariaDB over PG.
+- Feel free to swap out components.
 - Contributions are welcome! Please fork this repository and submit a pull request.
 - While the tests mock the data layer, this might be overkill for a simple project. It's included here for completeness.
 - This boilerplate aims to accelerate your development process.
@@ -73,7 +72,7 @@ For more information, refer to the [fastify-awilix](https://github.com/fastify/f
 
 ## Data Protection in Logging
 
-Our logging system includes a special feature for data protection. It uses a 'sanitizer' in combination with a 'logging decorator'. The sanitizer refers to a list of property names that should be hidden in logs to protect sensitive information. You can find and modify this list in the `sensitiveProps.ts` file.
+Using pino within fastify we have access to the redact feature https://fastify.dev/docs/latest/Reference/Logging/#log-redaction.
 
 
 <!-- MARKDOWN LINKS & IMAGES -->

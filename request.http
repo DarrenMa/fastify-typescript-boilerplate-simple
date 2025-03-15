@@ -1,0 +1,32 @@
+
+GET http://loclhost:10001/users/ HTTP/1.1
+
+###
+
+POST http://loclhost:10001/users/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "beavis",
+    "password": "butthead"
+}
+
+###
+
+POST http://loclhost:10001/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+
+###
+
+GET http://loclhost:10001/users/3 HTTP/1.1
+
+###
+
+DELETE http://loclhost:10001/users/2 HTTP/1.1
+
+###
