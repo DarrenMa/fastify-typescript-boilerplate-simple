@@ -1,5 +1,6 @@
 import supertest from 'supertest';
 import app from '../../src/app';
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 let testUserId: number | null = null;
 

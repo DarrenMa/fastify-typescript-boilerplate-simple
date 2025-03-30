@@ -2,22 +2,23 @@ import UserService from '../../src/services/UserService';
 import UserRepository from '../../src/datalayer/UserRepository';
 import { User } from '../../src/types';
 import { Knex } from 'knex';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-jest.mock('../../src/datalayer/UserRepository');
+vi.mock('../../src/datalayer/UserRepository');
 
 const mockKnex = {
   VERSION: '0.95.6',
   __knex__: 'knex',
-  raw: jest.fn(),
-  transactionProvider: jest.fn(),
+  raw: vi.fn(),
+  transactionProvider: vi.fn(),
 } as unknown as Knex;
 
 describe('UserService', () => {
   let userService: UserService;
-  let userRepository: jest.Mocked<UserRepository>;
+  let userRepository: vi.Mocked<UserRepository>;
 
   beforeEach(() => {
-    userRepository = new UserRepository({ db: mockKnex }) as jest.Mocked<UserRepository>;
+    userRepository = new UserRepository({ db: mockKnex }) as vi.Mocked<UserRepository>;
     userService = new UserService({ userRepository });
   });
 

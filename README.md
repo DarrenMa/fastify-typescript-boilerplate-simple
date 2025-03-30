@@ -24,7 +24,7 @@
 - **Dependency Injection**: Fastify plugins are used for dependency injection, providing a simple and effective way to manage dependencies.
 - **Style Guide**: The project adheres to the Airbnb style guide for consistent and readable code.
 - **Database Management**: Knex.js is used for database connection management, with PostgreSQL as the default database.
-- **Testable**: The use of dependency injection makes the project highly testable. Jest and Supertest are used for unit testing.
+- **Testable**: The use of dependency injection makes the project highly testable. Vitest and Supertest are used for unit testing.
 - **Swagger Docs**: The project includes Swagger documentation, which **reuses the JSON Schema** files created for validation.
 
 ## Quickstart
@@ -43,7 +43,7 @@ Here are a few key points to keep in mind:
 
 1. **Application Startup**: The environment variables are loaded into the application during startup, as handled in the `src/config.ts` file.
 
-2. **Test Suite Startup**: The environment variables are also loaded before the tests are run, as handled in the `jest.config.js` setupFiles section.
+2. **Test Suite Startup**: The environment variables are also loaded before the tests are run, as handled in the `vitest.config.js` setupFiles section.
 
 3. **Knex Commands**: When running Knex commands via an npm script, the environment variables must be available. This is achieved by preloading `dotenv/config` using the `-r` flag in Node.js. For example, a Knex command in an npm script might look like this: `node -r dotenv/config ./node_modules/.bin/knex migrate:latest`.
 
@@ -73,7 +73,6 @@ For more information, refer to the [fastify-awilix](https://github.com/fastify/f
 ## Data Protection in Logging
 
 Using pino within fastify we have access to the redact feature https://fastify.dev/docs/latest/Reference/Logging/#log-redaction.
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->

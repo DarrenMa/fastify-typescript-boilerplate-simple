@@ -1,26 +1,27 @@
 import { Knex } from 'knex';
 import UserRepository from '../../src/datalayer/UserRepository';
 import { User } from '../../src/types';
+import { beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
 
-jest.mock('knex');
+vi.mock('knex');
 
 describe('UserRepository', () => {
-  let db: jest.Mocked<Partial<Knex>> & jest.Mock;
+  let db: ReturnType<typeof vi.fn> & Partial<Knex>;
   let userRepository: UserRepository;
 
   beforeEach(() => {
     const dbImplementation: Partial<Knex> = {
-      select: jest.fn().mockReturnThis(),
-      from: jest.fn().mockReturnThis(),
-      where: jest.fn().mockReturnThis(),
-      first: jest.fn() as jest.Mock,
-      insert: jest.fn().mockReturnThis(),
-      returning: jest.fn().mockResolvedValue([{ id: 1 }]),
-      del: jest.fn().mockReturnThis(),
-      update: jest.fn().mockResolvedValue(1),
-      orderBy: jest.fn().mockReturnThis(),
+      select: vi.fn().mockReturnThis(),
+      from: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+      first: vi.fn().mockReturnThis(),
+      insert: vi.fn().mockReturnThis(),
+      returning: vi.fn().mockResolvedValue([{ id: 1 }]),
+      del: vi.fn().mockReturnThis(),
+      update: vi.fn().mockResolvedValue(1),
+      orderBy: vi.fn().mockReturnThis(),
     };
-    db = jest.fn(() => dbImplementation) as any;
+    db = vi.fn(() => dbImplementation) as any;
     Object.assign(db, dbImplementation);
     userRepository = new UserRepository({ db: db as any });
   });
@@ -28,7 +29,7 @@ describe('UserRepository', () => {
   describe('get', () => {
     it('should return a user when given a valid id', async () => {
       const user: User = { id: 1, name: 'John Doe', password: '' };
-      (db.first as jest.Mock).mockResolvedValue(user);
+      ((db.first as unknown) as MockInstance).mockResolvedValue(user);
 
       const result = await userRepository.get(1);
 
@@ -40,7 +41,7 @@ describe('UserRepository', () => {
     });
 
     it('should throw an error when the user is not found', async () => {
-      (db.first as jest.Mock).mockResolvedValue(undefined);
+      ((db.first as unknown) as MockInstance).mockResolvedValue(undefined);
 
       await expect(userRepository.get(1)).rejects.toThrow('User not found');
     });
@@ -85,8 +86,7 @@ describe('UserRepository', () => {
     it('should throw an error if no rows were affected', async () => {
       const user: User = { id: 1, name: 'John Doe', password: 'password' };
 
-      (db.update as jest.Mock).mockResolvedValueOnce(0);
-
+      ((db.update as unknown) as MockInstance).mockResolvedValueOnce(0);
       await expect(userRepository.update(user.id, user))
         .rejects.toThrow('Failed to update user');
 
@@ -99,7 +99,7 @@ describe('UserRepository', () => {
   describe('getAllUsers', () => {
     it('should return all users', async () => {
       const users: User[] = [{ id: 1, name: 'John Doe', password: '' }];
-      (db.orderBy as jest.Mock).mockResolvedValue(users);
+      ((db.orderBy as unknown) as MockInstance).mockResolvedValueOnce(users);
 
       const result = await userRepository.getAllUsers();
 
